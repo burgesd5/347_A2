@@ -10,19 +10,40 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Song.h"
+// From song.h, truncated name for brevity
+int FBS = FIELD_BUFFER_SIZE;
 
 int writeSongRecord(char* filename, char* name, char* artist, int length)
 {
-    
+    // open file successfully before writing
+    FILE* file = fopen(filename, "a");
+    if (file == NULL)
+    {
+        printf("ERROR: File won't open.\n");
+        return -1;
+    }
+    printf(file, "%s\n%s\n%d\n", name, artist, length);
+    // close file
+    fclose(file);
     return 0;
 }
 
 int readSongRecords(char* filename)
 {
-    
+    FILE* file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("ERROR: File won't open.\n");
+        return -1;
+    }
 
+    char names[FBS];
+    char artists[FBS];
+    char lengths[FBS];
     return 0;
 }
+
+
 
 int totalTimeOfSongs(char* filename)
 {

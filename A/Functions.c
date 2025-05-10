@@ -1,15 +1,15 @@
 /*
 # Names: Elijah Atienza, Dylan Burges
-# Description: This proggram will test the fundamentals of text file input and output
+# Description: This program will test the fundamentals of text file input and output
 # Date: 5/9/2025
 */
 #pragma warning(disable : 4996)
-//https://www.tutorialspoint.com/c_standard_library/c_function_fgets.htm
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "Song.h"
+
 // From song.h, truncated name for brevity
 int FBS = FIELD_BUFFER_SIZE;
 

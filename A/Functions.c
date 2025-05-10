@@ -1,3 +1,8 @@
+/*
+# Names: Elijah Atienza, Dylan Burges
+# Description: This proggram will test the fundamentals of text file input and output
+# Date: 5/9/2025
+*/
 #pragma warning(disable : 4996)
 //https://www.tutorialspoint.com/c_standard_library/c_function_fgets.htm
 

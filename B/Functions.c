@@ -1,7 +1,7 @@
 /*
 # Names: Elijah Atienza, Dylan Burges
 # Description: This program will test the fundamentals of binary text file input and output
-# Date: 5/9/2025
+# Date: 5/11/2025
 */
 #pragma warning(disable : 4996)
 
@@ -24,16 +24,16 @@ int writeSongRecord(char* filename, char* name, char* artist, int length)
         return -1;
     }
 
-    // once the null terminating character is on then I can have a buffer of 
-    // FBS size written to the file which looks like what they have in the example binary file
-
     char nameBuf[FBS]; 
     char artistBuf[FBS];
     char lengthBuf[FBS];
 
+    // set lengthBuf to 0 then print length var in ASCI to the buffer.
     memset(lengthBuf, 0, FBS);
-
     snprintf(lengthBuf, sizeof(lengthBuf), "%d", length);
+
+    // once i attach a null terminating character then I can have a buffer of "FBS"
+    // size written to the file which looks like what they have in the example binary file
 
     // add null terminators to correctly parse in reading function
     strncpy(nameBuf, name, sizeof(nameBuf) - 1);
@@ -42,7 +42,7 @@ int writeSongRecord(char* filename, char* name, char* artist, int length)
     strncpy(artistBuf, artist, sizeof(artistBuf) - 1);
     artistBuf[strlen(artist)] = '\0';
 
-    // write name (the "+ 1" accounts for null terminator) (newline for reading)
+    // write name (the "+ 1" accounts for null terminator)
     fwrite(nameBuf, sizeof(char), FBS, file);
 
     // write artist
@@ -65,12 +65,12 @@ int readSongRecords(char* filename)
         printf("ERROR: File won't open.\n");
         return -1;
     }
-    // Buffer for each field
+
     char nameBuf[FBS];
     char artistBuf[FBS];
     char lengthBuf[FBS];
 
-    // make sure all reads are succesful before continuing
+    // read the binary file
     while(1) {
 
         // read name
@@ -166,11 +166,10 @@ int findSong(char* filename, char* songName, Song* song)
         }; 
 
         // parse buffer for song name and compare
-        // Strcmp for curr vs target song
         if (strcmp(songName, buf) == 0)
         {
             // song found
-            // fill out other buffers then add to song
+            // fill out other buffers then add to song struct
 
             // read artist
             if (fread(artistBuf, sizeof(char), FBS, file) == 0) {
@@ -181,8 +180,6 @@ int findSong(char* filename, char* songName, Song* song)
             if (fread(lengthBuf, sizeof(char), FBS, file) == 0) {
                 break;  // End of file or error
             }
-
-
 
             strcpy(song->name, buf);
             strcpy(song->artist, artistBuf);

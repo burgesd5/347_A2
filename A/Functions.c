@@ -57,7 +57,9 @@ int readSongRecords(char* filename)
 
         printf("Name: %s\nArtist: %s\nLength: %d\n", nameBuf, artistBuf, length);
     }
-    
+
+    fclose(file);
+
     return 0;
 }
 

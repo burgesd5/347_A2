@@ -7,7 +7,7 @@
 #include "Functions.h"
 #include "Song.h"
 
-#define SONG_FILE "Songs.txt"
+#define SONG_FILE "Songs.bin"
 
 int main()
 {

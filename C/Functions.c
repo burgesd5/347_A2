@@ -1,10 +1,12 @@
 /*
 # Names: Elijah Atienza, Dylan Burges
-# Description: This program will test the fundamentals of binary text file input and output
+# Description: This program will test the fundamentals of binary text file input and output using only system calls
 # Date: 5/11/2025
 */
 #pragma warning(disable : 4996)
 
+#include <unistd.h>  // linux I/O header
+#include <fcntl.h>  // flag header header
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,12 +18,13 @@ int FBS = FIELD_BUFFER_SIZE;
 // The function returns -1 if there’s a file IO error, or 0 otherwise. 
 int writeSongRecord(char* filename, char* name, char* artist, int length)
 {
-    // open file successfully before writing
-    FILE* file = fopen(filename, "ab");
-    if (file == NULL)
-    {
-        printf("ERROR: File won't open or create.\n");
-        return -1;
+    // If file does not have in directory
+    // then file Songs.bin is created.
+    int fd = open("Songs.bin", O_WRONLY | O_APPEND | O_CREAT);
+
+    if (fd == -1) {
+        // print error
+        printf("Error opening file.");
     }
 
     char nameBuf[FBS]; 
@@ -42,28 +45,28 @@ int writeSongRecord(char* filename, char* name, char* artist, int length)
     strncpy(artistBuf, artist, sizeof(artistBuf) - 1);
     artistBuf[strlen(artist)] = '\0';
 
-    // write name (the "+ 1" accounts for null terminator)
-    fwrite(nameBuf, sizeof(char), FBS, file);
+    // write name 
+    write(fd, nameBuf, FBS);
 
     // write artist
-    fwrite(artistBuf, sizeof(char), FBS, file);
+    write(fd, artistBuf, FBS);
 
     // write length 
-    fwrite(lengthBuf, sizeof(char), FBS, file);
+    write(fd, lengthBuf, FBS);
  
     // close file
-    fclose(file);
+    close(fd);
     return 0;
 }
 
 // The function returns -1 if there’s a file IO error, or 0 otherwise
 int readSongRecords(char* filename)
 {
-    FILE* file = fopen(filename, "rb");
-    if (file == NULL)
-    {
-        printf("ERROR: File won't open.\n");
-        return -1;
+    int fd = open("Songs.bin", O_WRONLY | O_APPEND | O_CREAT);
+
+    if (fd == -1) {
+        // print error
+        printf("Error opening file.");
     }
 
     char nameBuf[FBS];
@@ -74,25 +77,25 @@ int readSongRecords(char* filename)
     while(1) {
 
         // read name
-        if (fread(nameBuf, sizeof(char), FBS, file) == 0) {
-            break;  // End of file or error
+        if (read(fd, nameBuf, FBS) == 0) {
+            break;  // End of file
         }
         printf("Name: %s\n", nameBuf);
 
         // read artist
-        if (fread(artistBuf, sizeof(char), FBS, file) == 0) {
-            break;  // End of file or error
+        if (read(fd, artistBuf, FBS) == 0) {
+            break;  // End of file
         }
         printf("Artist: %s\n", artistBuf);
 
         // read length
-        if (fread(lengthBuf, sizeof(char), FBS, file) == 0) {
-            break;  // End of file or error
+        if (read(fd, lengthBuf, FBS) == 0) {
+            break;  // End of file
         }
         printf("Length: %d\n\n", atoi(lengthBuf));
     }
 
-    fclose(file);
+    close(fd);
 
     return 0;
 }
@@ -101,12 +104,15 @@ int readSongRecords(char* filename)
 // The function returns the total time of all songs. 
 int totalTimeOfSongs(char* filename)
 {
-    FILE* file = fopen(filename, "rb");
-    if (file == NULL)
-    {
-        printf("Error opening file.\n");
-        return -1;
+    int fd = open("Songs.bin", O_WRONLY | O_APPEND | O_CREAT);
+
+    if (fd == -1) {
+        // print error
+        printf("Error opening file.");
     }
+
+    // STOPPED HERE IN CHANGING CODE
+    // NEED TO USE lSEEK TO SEEK FILE NOW
 
     int totalT = 0;
     char buf[FBS];  

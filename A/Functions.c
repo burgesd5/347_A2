@@ -1,6 +1,7 @@
 /*
 # Names: Elijah Atienza, Dylan Burges
 # Description: This program will test the fundamentals of text file input and output
+# Assignment Letter: A
 # Date: 5/9/2025
 */
 #pragma warning(disable : 4996)
@@ -57,7 +58,6 @@ int readSongRecords(char* filename)
 
         printf("Name: %s\nArtist: %s\nLength: %d\n", nameBuf, artistBuf, length);
     }
-
     fclose(file);
 
     return 0;

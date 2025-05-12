@@ -1,6 +1,7 @@
 /*
 # Names: Elijah Atienza, Dylan Burges
 # Description: This program will test the fundamentals of binary text file input and output
+# Assignment Letter: B
 # Date: 5/11/2025
 */
 #pragma warning(disable : 4996)

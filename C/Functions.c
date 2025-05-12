@@ -108,6 +108,7 @@ int readSongRecords(char* filename)
 
     }
 
+    // close file
     int ret = close(fd);
     if (ret == -1) {
         write(1, "file close error\n", 17);
@@ -121,39 +122,30 @@ int readSongRecords(char* filename)
 // The function returns the total time of all songs. 
 int totalTimeOfSongs(char* filename)
 {
-    FILE* file = fopen(filename, "rb");
-    if (file == NULL)
-    {
-        printf("Err opening file.\n");
-        return -1;
+    int fd = open("Songs.bin", O_RDONLY);
+
+    if (fd == -1) {
+        // print error
+        write(1, "file open error\n", 16);
     }
-    // int fd = open("Songs.bin", O_WRONLY | O_APPEND | O_CREAT);
-
-    // if (fd == -1) {
-    //     // print error
-    //     printf("Error opening file.");
-    // }
-
-    // STOPPED HERE IN CHANGING CODE
-    // NEED TO USE lSEEK
 
     int totalT = 0;
     char buf[FBS];  
 
     // make sure im at beginning of binary file
-    fseek(file, 0, SEEK_SET);
-    
+    lseek(fd, 0, SEEK_SET);
 
     // Keep reading song records until the end of file
     while (1) {   
 
         // seek to length val
-        if (fseek(file, FBS * 2, SEEK_CUR) != 0) {
-            printf("End of line or error detected while seeking\n");
+        if (lseek(fd, FBS * 2, SEEK_CUR) == -1) {
+            write(1, "seek error\n", 11);
+            break;
         }
         
         // read length val to buffer and parse correctly
-        if (fread(buf, sizeof(char), FBS, file) == 0) {
+        if (read(fd, buf, FBS) <= 0) {
             break;  // End of file or error
         }
 
@@ -164,18 +156,24 @@ int totalTimeOfSongs(char* filename)
         totalT += val;
     }
 
-    fclose(file);
+    // close file
+    int ret = close(fd);
+    if (ret == -1) {
+        write(1, "file close error\n", 17);
+        return -1;
+    }
+
     return totalT;
 }
 
 // The function returns -1 if there’s a file IO error, 1 if the song is found, or 0 if not found.
 int findSong(char* filename, char* songName, Song* song)
 {
-    FILE* file = fopen(filename, "rb");
-    if (file == NULL)
-    {
-        printf("Err opening file.\n");
-        return -1;
+    int fd = open("Songs.bin", O_RDONLY);
+
+    if (fd == -1) {
+        // print error
+        write(1, "file open error\n", 16);
     }
 
     char buf[FBS];
@@ -183,14 +181,14 @@ int findSong(char* filename, char* songName, Song* song)
     char lengthBuf[FBS];
 
     // make sure im at beginning of binary file
-    fseek(file, 0, SEEK_SET);
+    lseek(fd, 0, SEEK_SET);
     
     // Keep reading song records until the end of file
     while (1) {   
 
         // read song name to buffer and parse correctly
-        if (fread(buf, sizeof(char), FBS, file) != FBS) {
-            printf("No more room to search for songs\n");
+        if (read(fd, buf, FBS) <= 0) {
+            // error reading so break and give seek error
             break;
         }; 
 
@@ -201,12 +199,12 @@ int findSong(char* filename, char* songName, Song* song)
             // fill out other buffers then add to song struct
 
             // read artist
-            if (fread(artistBuf, sizeof(char), FBS, file) == 0) {
+            if (read(fd, artistBuf, FBS) <= 0) {
                 break;  // End of file or error
             }
 
             // read length
-            if (fread(lengthBuf, sizeof(char), FBS, file) == 0) {
+            if (read(fd, lengthBuf, FBS) <= 0) {
                 break;  // End of file or error
             }
 
@@ -214,20 +212,32 @@ int findSong(char* filename, char* songName, Song* song)
             strcpy(song->artist, artistBuf);
             strcpy(song->length, lengthBuf);
             
-            fclose(file);
+            // close file
+            int ret = close(fd);
+            if (ret == -1) {
+                write(1, "file close error\n", 17);
+                return -1;
+            }
 
             // success
             return 1;
         }
 
         // seek to length val
-        if (fseek(file, FBS * 2, SEEK_CUR) != 0) {
-            printf("End of line or error detected while seeking\n");
+        if (lseek(fd, FBS * 2, SEEK_CUR) == -1) {
+            write(1, "No more room to search\n", 11);
         }
 
     }
+
+    // close file
+    int ret = close(fd);
+    if (ret == -1) {
+        write(1, "file close error\n", 17);
+        return -1;
+    }
+
     // song not found
-    fclose(file);
     return 0;
 }
 
